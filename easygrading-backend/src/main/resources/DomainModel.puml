@@ -22,7 +22,14 @@ class Teacher {
 Student "*" --* "1" Class
 Teacher "1..*" -- "*" Class
 
+class Performance {
+    achievedPoints: int
+    date: Date
+}
 
+class GradingScheme {
+    name: String
+}
 
 class ActivityCategory {
     name : String
@@ -34,24 +41,17 @@ class Activity {
     maxPoints : int
 }
 
-class Performance {
-    achievedPoints: int
-    date: Date
-}
-
-class AssessmentScale {
-   name: String
-}
-
 Class "*" -- "0..1" AssessmentScale
 
-class Threshold {
+class AssessmentThreshold {
     name: String
     number: int
-    startsAt: double
+    startingPercentage: double
 }
 
-AssessmentScale "1" -- "1..4" Threshold
+
+GradingScheme "1" -- "1..4" AssessmentThreshold
+GradingScheme "1" -- "*" ActivityCategory
 
 Student "1" -- "*" Performance
 Performance "*" -- "1" Activity
