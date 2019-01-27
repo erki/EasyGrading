@@ -1,0 +1,62 @@
+@startuml
+
+title EasyGrading - Domain Model
+
+class Student {
+    firstname: String
+    lastname: String
+}
+
+class Class {
+    name: String
+}
+
+class Teacher {
+    username: String
+    email: String
+    firstname: String
+    lastname: String
+}
+
+
+Student "*" --* "1" Class
+Teacher "1..*" -- "*" Class
+
+
+
+class ActivityCategory {
+    name : String
+    weight: int
+}
+
+class Activity {
+    name : String
+    maxPoints : int
+}
+
+class Performance {
+    achievedPoints: int
+    date: Date
+}
+
+class AssessmentScale {
+   name: String
+}
+
+Class "*" -- "0..1" AssessmentScale
+
+class Threshold {
+    name: String
+    number: int
+    startsAt: double
+}
+
+AssessmentScale "1" -- "1..4" Threshold
+
+Student "1" -- "*" Performance
+Performance "*" -- "1" Activity
+
+ActivityCategory "1" o-- "*" Activity
+
+
+@enduml
