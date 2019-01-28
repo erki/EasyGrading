@@ -24,9 +24,10 @@ public class TestDataGenerator {
                                        ActivityRepository activityRepository) {
         return args -> {
             log.info("Populate DB with testdata");
-            teacherRepository.save(new Teacher("cory", "Corinna", "Erkinger", "corinna.erkinger@gmail.com", "password"
-            ));
-            SchoolClass schoolClass = new SchoolClass("4B");
+            Teacher teacher = new Teacher("cory", "Corinna", "Erkinger", "corinna.erkinger@gmail.com", "password"
+            );
+            teacherRepository.save(teacher);
+            SchoolClass schoolClass = new SchoolClass("4B", teacher);
             schoolClass.getStudents().addAll(asList(new Student("Max", "Mustermann", schoolClass), new Student("Lena",
                             "Meier", schoolClass),
                     new Student("Lara", "Lustig", schoolClass)));

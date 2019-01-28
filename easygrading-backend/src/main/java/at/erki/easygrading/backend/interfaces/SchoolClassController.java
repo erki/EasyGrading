@@ -1,15 +1,9 @@
 package at.erki.easygrading.backend.interfaces;
 
-import at.erki.easygrading.backend.domain.model.SchoolClass;
-import at.erki.easygrading.backend.domain.model.Student;
 import at.erki.easygrading.backend.domain.repository.SchoolClassRepository;
-import at.erki.easygrading.backend.domain.repository.StudentRepository;
 import at.erki.easygrading.backend.interfaces.assembler.SchoolClassResourceAssembler;
-import at.erki.easygrading.backend.interfaces.assembler.StudentResourceAssembler;
 import at.erki.easygrading.backend.interfaces.exception.SchoolClassNotFoundException;
-import at.erki.easygrading.backend.interfaces.exception.StudentNotFoundException;
 import at.erki.easygrading.backend.interfaces.resource.SchoolClassResource;
-import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,18 +20,12 @@ public class SchoolClassController {
 
     private SchoolClassRepository schoolClassRepository;
 
-    private StudentRepository studentRepository;
-
     private SchoolClassResourceAssembler schoolClassAssembler;
 
-    private StudentResourceAssembler studentAssembler;
-
     public SchoolClassController(SchoolClassRepository schoolClassRepository,
-                                 SchoolClassResourceAssembler schoolClassAssembler,
-                                 StudentResourceAssembler studentAssembler) {
+                                 SchoolClassResourceAssembler schoolClassAssembler) {
         this.schoolClassRepository = schoolClassRepository;
         this.schoolClassAssembler = schoolClassAssembler;
-        this.studentAssembler = studentAssembler;
     }
 
     @GetMapping(value = "/classes")
@@ -56,18 +44,4 @@ public class SchoolClassController {
                 schoolClassRepository.findById(id).orElseThrow(() -> new SchoolClassNotFoundException(id)));
     }
 
-    @GetMapping("/classes/{id}/students")
-    public Resources<Resource<Student>> allStudents(@PathVariable Long id) {
-        SchoolClass schoolClass = schoolClassRepository.findById(id)
-                .orElseThrow(() -> new SchoolClassNotFoundException(id));
-        List<Resource<Student>> students =
-                schoolClass.getStudents().stream().map(studentAssembler::toResource).collect(Collectors.toList());
-        return new Resources<>(students);
-    }
-
-    @GetMapping("/classes/{classId}/students/{studentId}")
-    public Resource<Student> oneStudent(@PathVariable Long classId, @PathVariable Long studentId) {
-        return studentAssembler.toResource(
-                studentRepository.findById(studentId).orElseThrow(() -> new StudentNotFoundException(studentId)));
-    }
 }

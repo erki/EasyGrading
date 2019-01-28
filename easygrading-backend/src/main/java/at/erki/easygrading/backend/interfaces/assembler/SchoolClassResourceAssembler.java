@@ -2,6 +2,7 @@ package at.erki.easygrading.backend.interfaces.assembler;
 
 import at.erki.easygrading.backend.domain.model.SchoolClass;
 import at.erki.easygrading.backend.interfaces.SchoolClassController;
+import at.erki.easygrading.backend.interfaces.TeacherController;
 import at.erki.easygrading.backend.interfaces.resource.SchoolClassResource;
 import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.hateoas.Resources;
@@ -27,7 +28,9 @@ public class SchoolClassResourceAssembler implements ResourceAssembler<SchoolCla
         EmbeddedWrappers wrapper = new EmbeddedWrappers(true);
         SchoolClassResource resource = new SchoolClassResource(schoolClass.getName());
         resource.add(linkTo(methodOn(SchoolClassController.class).one(schoolClass.getId())).withSelfRel(),
-                linkTo(methodOn(SchoolClassController.class).all()).withRel("all"));
+                linkTo(methodOn(SchoolClassController.class).all()).withRel("all"),
+                linkTo(methodOn(TeacherController.class).one(schoolClass.getTeacher().getUsername())).withRel(
+                        "teacher"));
         resource.setEmbeddeds(
                 new Resources<>(schoolClass.getStudents().stream().map(studentResourceAssembler::toResource)
                         .map(wrapper::wrap)

@@ -18,12 +18,17 @@ public class SchoolClass {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "teacherId")
+    private Teacher teacher;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "classId")
     private List<Student> students = new ArrayList<>();
 
-    public SchoolClass(String name) {
+    public SchoolClass(String name, Teacher teacher) {
         this.name = name;
+        this.teacher = teacher;
     }
 
     protected SchoolClass() {}
