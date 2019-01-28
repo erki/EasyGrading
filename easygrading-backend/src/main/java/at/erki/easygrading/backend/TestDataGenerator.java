@@ -2,8 +2,8 @@ package at.erki.easygrading.backend;
 
 import at.erki.easygrading.backend.domain.model.*;
 import at.erki.easygrading.backend.domain.repository.ActivityRepository;
-import at.erki.easygrading.backend.domain.repository.ClassRepository;
 import at.erki.easygrading.backend.domain.repository.GradingSchemeRepository;
+import at.erki.easygrading.backend.domain.repository.SchoolClassRepository;
 import at.erki.easygrading.backend.domain.repository.TeacherRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -19,16 +19,18 @@ public class TestDataGenerator {
 
     @Bean
     @Profile("dev")
-    CommandLineRunner populateDatabase(TeacherRepository teacherRepository, ClassRepository classRepository,
-                                       GradingSchemeRepository gradingSchemeRepository, ActivityRepository activityRepository) {
+    CommandLineRunner populateDatabase(TeacherRepository teacherRepository, SchoolClassRepository schoolClassRepository,
+                                       GradingSchemeRepository gradingSchemeRepository,
+                                       ActivityRepository activityRepository) {
         return args -> {
             log.info("Populate DB with testdata");
             teacherRepository.save(new Teacher("cory", "Corinna", "Erkinger", "corinna.erkinger@gmail.com", "password"
             ));
             SchoolClass schoolClass = new SchoolClass("4B");
-            schoolClass.getStudents().addAll(asList(new Student("Max", "Mustermann"), new Student("Lena", "Meier"),
-                    new Student("Lara", "Lustig")));
-            classRepository.saveAndFlush(schoolClass);
+            schoolClass.getStudents().addAll(asList(new Student("Max", "Mustermann", schoolClass), new Student("Lena",
+                            "Meier", schoolClass),
+                    new Student("Lara", "Lustig", schoolClass)));
+            schoolClassRepository.saveAndFlush(schoolClass);
             GradingScheme gradingScheme = new GradingScheme("Englisch");
             gradingScheme.getAssessmentScale().addAll(asList(
                     new AssessmentThreshold("1", "Sehr Gut", 90),

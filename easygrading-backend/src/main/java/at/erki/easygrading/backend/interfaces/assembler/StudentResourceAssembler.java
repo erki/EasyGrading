@@ -2,19 +2,22 @@ package at.erki.easygrading.backend.interfaces.assembler;
 
 import at.erki.easygrading.backend.domain.model.Student;
 import at.erki.easygrading.backend.interfaces.SchoolClassController;
-import at.erki.easygrading.backend.interfaces.resource.StudentResource;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
-@Component
-public class StudentResourceAssembler extends ResourceAssemblerSupport<Student, StudentResource> {
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-    public StudentResourceAssembler() {
-        super(SchoolClassController.class, StudentResource.class);
-    }
+@Component
+public class StudentResourceAssembler implements ResourceAssembler<Student, Resource<Student>> {
 
     @Override
-    public StudentResource toResource(Student student) {
-        return new StudentResource(student);
+    public Resource<Student> toResource(Student student) {
+        return new Resource<>(student,
+                linkTo(methodOn(SchoolClassController.class).oneStudent(student.getSchoolClass().getId(),
+                        student.getId())).withSelfRel(),
+                linkTo(methodOn(SchoolClassController.class).one(student.getSchoolClass().getId())).withRel("class"));
     }
+
 }
