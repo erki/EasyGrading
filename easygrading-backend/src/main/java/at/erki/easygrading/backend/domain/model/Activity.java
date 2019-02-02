@@ -1,5 +1,6 @@
 package at.erki.easygrading.backend.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Activity {
 
     @ManyToOne
     @JoinColumn(name = "classId")
+    @JsonIgnore
     private SchoolClass schoolClass;
 
     protected Activity() {}

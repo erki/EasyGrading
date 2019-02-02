@@ -1,5 +1,6 @@
 package at.erki.easygrading.backend.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -18,11 +19,18 @@ public class Performance {
     private int achievedPoints;
 
     @ManyToOne
+    @JsonIgnore
     private Student student;
 
     @ManyToOne
     private Activity activity;
 
     protected Performance() {}
+
+    public Performance(int achievedPoints, Student student, Activity activity) {
+        this.achievedPoints = achievedPoints;
+        this.student = student;
+        this.activity = activity;
+    }
 
 }

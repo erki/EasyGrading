@@ -1,15 +1,14 @@
 package at.erki.easygrading.backend;
 
 import at.erki.easygrading.backend.domain.model.*;
-import at.erki.easygrading.backend.domain.repository.ActivityRepository;
-import at.erki.easygrading.backend.domain.repository.GradingSchemeRepository;
-import at.erki.easygrading.backend.domain.repository.SchoolClassRepository;
-import at.erki.easygrading.backend.domain.repository.TeacherRepository;
+import at.erki.easygrading.backend.domain.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -21,7 +20,8 @@ public class TestDataGenerator {
     @Profile("dev")
     CommandLineRunner populateDatabase(TeacherRepository teacherRepository, SchoolClassRepository schoolClassRepository,
                                        GradingSchemeRepository gradingSchemeRepository,
-                                       ActivityRepository activityRepository) {
+                                       ActivityRepository activityRepository,
+                                       PerformanceRepository performanceRepository) {
         return args -> {
             log.info("Populate DB with testdata");
             Teacher teacher = new Teacher("cory", "Corinna", "Erkinger", "corinna.erkinger@gmail.com", "password"
@@ -44,9 +44,13 @@ public class TestDataGenerator {
             gradingScheme.getCategories().addAll(asList(exams, homeworks));
             gradingSchemeRepository.saveAndFlush(gradingScheme);
 
-            activityRepository.saveAll(asList(new Activity("Schularbeit 1", 100, schoolClass, exams),
+            List<Activity> activities = activityRepository.saveAll(asList(new Activity("Schularbeit 1", 100,
+                            schoolClass, exams),
                     new Activity("Schularbeit 2", 100, schoolClass, exams),
                     new Activity("HÜ 1", 20, schoolClass, homeworks)));
+
+            performanceRepository.saveAll(asList(new Performance(80, schoolClass.getStudents().get(0),
+                    activities.get(0)), new Performance(12, schoolClass.getStudents().get(0), activities.get(2))));
         };
     }
 
